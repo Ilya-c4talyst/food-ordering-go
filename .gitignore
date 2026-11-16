@@ -1,0 +1,16 @@
+/data/
+/bin/
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+!.env.example
+.DS_Store
+*.docx
+*.pdf
+*.xlsx
+*.zip
+*.drawio
+*.svg
+/screenshots/

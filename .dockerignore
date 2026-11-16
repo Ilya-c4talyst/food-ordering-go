@@ -1,0 +1,13 @@
+data
+bin
+screenshots
+demo
+integration
+*.docx
+*.pdf
+*.drawio
+*.svg
+*.md
+**/*_test.go
+internal/testutil
+.DS_Store

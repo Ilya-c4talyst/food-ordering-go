@@ -1,0 +1,55 @@
+name: food-ordering-go
+
+services:
+  menu-service:
+    build:
+      context: .
+      dockerfile: menu-service/Dockerfile
+    ports:
+      - "127.0.0.1:${MENU_PORT:-8081}:8081"
+    volumes:
+      - menu-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8081/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    environment:
+      MENU_URL: http://menu-service:8081
+      NOTIFICATION_URL: http://notification-service:8083
+    ports:
+      - "127.0.0.1:${ORDER_PORT:-8082}:8082"
+    volumes:
+      - order-data:/data
+    depends_on:
+      - menu-service
+      - notification-service
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8082/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    ports:
+      - "127.0.0.1:${NOTIFICATION_PORT:-8083}:8083"
+    volumes:
+      - notification-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8083/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+
+volumes:
+  menu-data:
+  order-data:
+  notification-data:
